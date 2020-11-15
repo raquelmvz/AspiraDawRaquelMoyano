@@ -5,6 +5,8 @@
  */
 package programa;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
@@ -54,17 +56,65 @@ public class Aspiradaw {
         return repetir;
     }
 
-    // Método que solicite los metros cuadrados de una dependencia con JOption
-    public static double pedirMetrosDependencia() {
+    //Metodo que inicializa la estructura de la casa por defecto
+    public static ArrayList<String> casaPredeterminada() {
 
-        double metrosCuadradosDependencia = 0;
+        ArrayList<String> casaPredeterminada = new ArrayList<>();
+
+        //Inicializo el Array List con los valores que tendrá la casa por defecto
+        casaPredeterminada.add("Cocina");
+        casaPredeterminada.add("Salón");
+        casaPredeterminada.add("Baño");
+        casaPredeterminada.add("Dormitorio 1");
+        casaPredeterminada.add("Dormitorio 2");
+
+        return casaPredeterminada;
+    }
+
+    // Metodo para configurar una casa personalizada
+    // Se pregunta al usuario el numero de dependencias por cada tipo y se añaden a un Array List
+    //El metodo devuelve un Array List con la informacion de las habitaciones de la casa
+    public static ArrayList<String> configuraCasa() {
+
+        ArrayList<String> casaPersonalizada = new ArrayList<>();
+
+        int numCocinas = Integer.parseInt(JOptionPane.showInputDialog("¿Cuantas cocinas tiene tu casa?"));
+        int numDormitorios = Integer.parseInt(JOptionPane.showInputDialog("¿Cuantos dormitorios tiene tu casa?"));
+        int numBanos = Integer.parseInt(JOptionPane.showInputDialog("¿Cuantos baños tiene tu casa?"));
+        int numSalones = Integer.parseInt(JOptionPane.showInputDialog("¿Cuantos salones tiene tu casa?"));
+
+        // Con el .add añadimos a la lista de casaPersonalizada el tipo de estancia que se está preguntado seguido de un 
+        // índice para poder distinguir entre diferentes habitaciones del mismo tipo
+        // Si tenemos varios dormitorios se distinguiran como: Dormitorio 1, Dormitorio 2, etc.
+        for (int i = 1; i <= numCocinas; i++) {
+            casaPersonalizada.add("Cocina " + i);
+        }
+
+        for (int i = 1; i <= numDormitorios; i++) {
+            casaPersonalizada.add("Dormitorio " + i);
+        }
+        for (int i = 1; i <= numBanos; i++) {
+            casaPersonalizada.add("Baño " + i);
+        }
+
+        for (int i = 1; i <= numSalones; i++) {
+            casaPersonalizada.add("Salon " + i);
+        }
+
+        return casaPersonalizada;
+    }
+
+    // Método que solicite los metros cuadrados de una dependencia con JOption
+    public static int pedirMetrosDependencia() {
+
+        int metrosCuadradosDependencia;
 
         //Los valores de metros no pueden ser ni inferior a 1 ni superiores a 100
         do {
 
             String metrosDependencia = JOptionPane.showInputDialog("Introduce los metros cuadrados de la dependencia\n"
                     + "Entre 1 y 100");
-            metrosCuadradosDependencia = Double.parseDouble(metrosDependencia);
+            metrosCuadradosDependencia = Integer.parseInt(metrosDependencia);
 
         } while (metrosCuadradosDependencia < 1 || metrosCuadradosDependencia > 100);
 
@@ -74,12 +124,11 @@ public class Aspiradaw {
     // Metodo que crea un array vacio de una longitud determinada
     // Para cada estancia vamos a crear un array vacio para poder guardar
     // los metros cuadrados de cada habitacion de esa dependencia
-//    public static int[] devuelveArray(int longitud) {
-//
-//        int[] contadorCadaDependencia = new int[longitud];
-//
-//        return contadorCadaDependencia;
-//    }
+    // public static int[] devuelveArray(int longitud) {
+    //    int[] contadorCadaDependencia = new int[longitud];
+    //    return contadorCadaDependencia;
+    //}
+    //Metodo que cargue la bateria hasta el 100%
     public static void main(String[] args) {
 
         //AUTENTIFICACION MEDIANTE USUARIO Y CONTRASEÑA
@@ -91,29 +140,81 @@ public class Aspiradaw {
             //CONFIGURAR EL SISTEMA
             //CARGA
             //ASPIRACION
+            //debe informar de las habitaciones que ha limpiado
             //ASPIRACION Y FREGADO
             //ESTADO GENERAL
             //BASE DE CARGA
             //SALIR
+            int opcionesMenu = Integer.parseInt(JOptionPane.showInputDialog("MENÚ PRINCIPAL\n"
+                    + "Marca la opción deseada\n"
+                    + "1. CONFIGURAR EL SISTEMA\n"
+                    + "2. CARGA\n"
+                    + "3. ASPIRACION\n"
+                    + "4. ASPIRACION Y FREGADO\n"
+                    + "5. ESTADO GENERAL\n"
+                    + "6. BASE DE CARGA\n"
+                    + "7. SALIR"));
+
+            switch (opcionesMenu) {
+
+                //Si marcamos 1 elegimos configurar la casa
+                case 1:
+                    //Se pregunta al usuario si desea configurar la casa o si prefiere quedarse
+                    //con la distribucion predeterminada
+                    ArrayList<String> estructuraCasa = casaPredeterminada();
+
+                    int respuestaPersonalizacion = Integer.parseInt(JOptionPane.showInputDialog("Esta es la estructura de la casa por defecto: \n"
+                            + Arrays.toString(estructuraCasa.toArray()) + "\n¿Deseas personalizarla?\n"
+                            + "1. - Sí\n"
+                            + "2. - No"));
+
+                    //Si el usuario elige personalizar la casa:
+                    if (respuestaPersonalizacion == 1) {
+                        estructuraCasa = configuraCasa();
+
+                        //Una vez configurada la casa le mostramos al usuario lo que ha configurado
+                        //y le preguntamos si esta de acuerdo con la distribucion que ha establecido
+                        int respuestaCorrecto;
+
+                        respuestaCorrecto = Integer.parseInt(JOptionPane.showInputDialog("Esta es la estructura de su casa: \n"
+                                + Arrays.toString(estructuraCasa.toArray()) + "\n¿Es correcto?\n"
+                                + "1. - Sí\n"
+                                + "2. - No"));
+
+                        //Mientras el usuario marque la opcion de que los datos son incorrectos se volvera a 
+                        //configurar la casa
+                        while (respuestaCorrecto != 1) {
+                            estructuraCasa = configuraCasa();
+
+                            respuestaCorrecto = Integer.parseInt(JOptionPane.showInputDialog("Esta es la estructura de su casa: \n"
+                                    + Arrays.toString(estructuraCasa.toArray()) + "\n¿Es correcto?\n"
+                                    + "1. - Sí\n"
+                                    + "2. - No"));
+                        }
+
+                    }
+
+            }
+
             // Configuración del sistema
-            // Numero de dependencias de la casa por defecto
-            int numCocinas = 1;
-            int numSalones = 1;
-            int numCuartosBano = 1;
-            int numDormitorios = 2;
-
+            //Recorro el array de la estructura de la casa y para cada una de las dependencias pido los metros
+//            for (int i = 0; i < estructuraCasa.length; i++) {
+//
+//                String dependencia = estructuraCasa[i];
+//                metrosCuadradosDependencias[i] = pedirMetrosDependencia(dependencia);
+//
+//            }
             // + : Configuracion num dependencias 
-            JOptionPane.showMessageDialog(null, "COCINA");
-            double metrosCuadradosCocina = pedirMetrosDependencia();
-            JOptionPane.showMessageDialog(null, "SALÓN");
-            double metrosCuadradosSalon = pedirMetrosDependencia();
-            JOptionPane.showMessageDialog(null, "BAÑO");
-            double metrosCuadradosBano = pedirMetrosDependencia();
-            JOptionPane.showMessageDialog(null, "DORMITORIO 1");
-            double metrosCuadradosDorm1 = pedirMetrosDependencia();
-            JOptionPane.showMessageDialog(null, "DORMITORIO 2");
-            double metrosCuadradosDorm2 = pedirMetrosDependencia();
-
+//            JOptionPane.showMessageDialog(null, "COCINA");
+//            double metrosCuadradosCocina = pedirMetrosDependencia();
+//            JOptionPane.showMessageDialog(null, "SALÓN");
+//            double metrosCuadradosSalon = pedirMetrosDependencia();
+//            JOptionPane.showMessageDialog(null, "BAÑO");
+//            double metrosCuadradosBano = pedirMetrosDependencia();
+//            JOptionPane.showMessageDialog(null, "DORMITORIO 1");
+//            double metrosCuadradosDorm1 = pedirMetrosDependencia();
+//            JOptionPane.showMessageDialog(null, "DORMITORIO 2");
+//            double metrosCuadradosDorm2 = pedirMetrosDependencia();
             menuSalir();
 
         } while (repetir);
