@@ -105,46 +105,54 @@ public class Aspiradaw {
     }
 
     // Método que solicite los metros cuadrados de una dependencia con JOption
-    public static int pedirMetrosDependencia() {
+    public static double pedirMetrosDependencia(String dependencia) {
 
-        int metrosCuadradosDependencia;
+        double metrosCuadradosDependencia;
 
         //Los valores de metros no pueden ser ni inferior a 1 ni superiores a 100
         do {
 
-            String metrosDependencia = JOptionPane.showInputDialog("Introduce los metros cuadrados de la dependencia\n"
+            String metrosDependencia = JOptionPane.showInputDialog("Introduce los metros cuadrados de la dependencia "
+                    + dependencia + "\n"
                     + "Entre 1 y 100");
-            metrosCuadradosDependencia = Integer.parseInt(metrosDependencia);
+            metrosCuadradosDependencia = Double.parseDouble(metrosDependencia);
 
         } while (metrosCuadradosDependencia < 1 || metrosCuadradosDependencia > 100);
 
         return metrosCuadradosDependencia;
     }
 
-    // Metodo que crea un array vacio de una longitud determinada
-    // Para cada estancia vamos a crear un array vacio para poder guardar
-    // los metros cuadrados de cada habitacion de esa dependencia
-    // public static int[] devuelveArray(int longitud) {
-    //    int[] contadorCadaDependencia = new int[longitud];
-    //    return contadorCadaDependencia;
-    //}
+    //Metodo que establece el nivel de carga de la bateria
+    public static double estableceCarga() {
+
+        double nivelCarga;
+
+        //Mientras los valores introducidos sean inferiores a 0 o superiores a 100 se vuelve a mostrar el mensaje por ventana
+        do {
+
+            nivelCarga = Double.parseDouble(JOptionPane.showInputDialog("Establece el nivel de carga del robot aspiradora\n"
+                    + "(Valores válidos: 0% - 100%)"));
+
+        } while (nivelCarga < 0 || nivelCarga > 100);
+
+        return nivelCarga;
+    }
+
+    // Metodo que crea un array tipo double vacio de una longitud determinada
+//    public static double[] devuelveArray(int longitud) {
+//        
+//        double[] array;
+//        array = new double[longitud];
+//        return array;
+//    }
     //Metodo que cargue la bateria hasta el 100%
     public static void main(String[] args) {
 
-        //AUTENTIFICACION MEDIANTE USUARIO Y CONTRASEÑA
+        //Autentificacion mediante usuario y contraseña al empezar el programa
         autentificacion();
 
         do {
 
-            // MENU PRINCIPAL debe tener:
-            //CONFIGURAR EL SISTEMA
-            //CARGA
-            //ASPIRACION
-            //debe informar de las habitaciones que ha limpiado
-            //ASPIRACION Y FREGADO
-            //ESTADO GENERAL
-            //BASE DE CARGA
-            //SALIR
             int opcionesMenu = Integer.parseInt(JOptionPane.showInputDialog("MENÚ PRINCIPAL\n"
                     + "Marca la opción deseada\n"
                     + "1. CONFIGURAR EL SISTEMA\n"
@@ -193,6 +201,49 @@ public class Aspiradaw {
                         }
 
                     }
+
+                    // Ahora toca pedir al usuario los metros cuadrados que mide cada estancia
+                    //Se debe recorrer el ArrayList y asociar un valor a cada estancia
+                    //ArrayList que guarda los valores de los m^2
+                    ArrayList<Double> metrosCuadradosCasa = new ArrayList<>();
+
+                    //Para iterar sobre un ArrayList se usa size() en vez de length()
+                    //El entorno lo corrige a un enhanced for loop
+                    //Este for recorre uno a uno cada habitacion (elemento) del arraylist
+                    for (String habitacion : estructuraCasa) {
+                        //Se usa el metodo pedirMetrosDependencia para cada habitacion
+                        //Este metodo ya tiene la limitacion de valores entre 1 y 100
+                        double metrosCuadrados = pedirMetrosDependencia(habitacion);
+                        //Se va llenando el ArrayList de los metros cuadrados
+                        metrosCuadradosCasa.add(metrosCuadrados);
+                    }
+
+                    //Una vez estructurada la casa y teniendo las medidas de cada habitacion
+                    //convierto los dos ArrayList a arrays para simplificar 
+                    //En el argumento del toArray es necesario pasar un array vacio
+                    //para forzar a ArrayList a crear un nuevo array y devolverlo
+                    //Este array va a ser una copia de los elementos del arraylist
+                    Double[] metrosCuadDependencias = metrosCuadradosCasa.toArray(new Double[0]);
+                    String[] dependenciasCasa = estructuraCasa.toArray(new String[0]);
+
+                    for (int i = 0; i < dependenciasCasa.length; i++) {
+                        System.out.println(dependenciasCasa[i] + " " + metrosCuadDependencias[i]);
+                    }
+
+                //La opcion 2 establece el nivel de bateria entre 0% y 100%
+                case 2:
+                    double nivelCarga = estableceCarga();
+                    JOptionPane.showMessageDialog(null, "Nivel de carga..." + nivelCarga + " %");
+
+                case 3:
+
+                case 4:
+
+                case 5:
+
+                case 6:
+
+                case 7:
 
             }
 
