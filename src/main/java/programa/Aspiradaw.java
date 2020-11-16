@@ -23,8 +23,8 @@ public class Aspiradaw {
     static final String USUARIO = "raquel";
     static final String PASSWORD = "aspiradaw";
     static boolean repetir = true; // Para que el programa se repita siempre a no ser que salgamos del programa 
-    static final double PORCENTAJE_PIERDE_ASPIRANDO = -0.15;
-    static final double PORCENTAJE_PIERDE_FREGANDO = -0.225;
+    static final double PORCENTAJE_PIERDE_ASPIRANDO = 0.15;
+    static final double PORCENTAJE_PIERDE_FREGANDO = 0.225;
     static final double MINIMO_BATERIA = 0.3;
     //En esta variable se va a guardar el nivel de la bateria
     static double nivelCarga;
@@ -37,6 +37,10 @@ public class Aspiradaw {
     static double metrosTotalesCasa;
     //Va a guardar la posicion del robot (Por defecto la vamos a poner en la base de carga)
     static String localizacionAspiradora = "Base de carga";
+    //Variable donde guardar el gasto de bateria durante la limpieza
+    static double bateriaSeGasta;
+    //ArrayList donde ir guardando las habitaciones que se van aspirando durante el proceso
+    static ArrayList<String> habitacionesAspiradas = new ArrayList<>();
 
     //Metodo que solicita un usuario y contraseña hasta que se introduce correctamente
     public static void autentificacion() {
@@ -150,6 +154,33 @@ public class Aspiradaw {
         } while (carga < 0 || carga > 100);
 
         return carga;
+    }
+
+    //Metodo que realiza el modo completo
+    //Necesita recibir por parametro el nivel de carga, el array de las dependencias,
+    //el array de los metros cuadrados y el porcentaje que pierde de bateria para 
+    //que sirva tanto para aspirado como para fregado
+    public static double modoCompleto(double carga, Double[] metrosCuad, String[] dependencias, double porcentaje) {
+        //Este modo va a limpiar el piso entero en funcion de la bateria
+        for (int i = 0; i < dependencias.length; i++) {
+            bateriaSeGasta = metrosCuad[i] * porcentaje;//la bateria baja hasta mas de 3% ARREGLAR
+            
+            if ((carga - bateriaSeGasta) > MINIMO_BATERIA) {
+                carga = carga - bateriaSeGasta;
+                JOptionPane.showMessageDialog(null, "Limpiando..." + dependencias[i]);
+                habitacionesAspiradas.add(dependencias[i]);
+                localizacionAspiradora = dependencias[i];
+
+            } else {
+                JOptionPane.showMessageDialog(null, "No hay batería suficiente para seguir limpiando\n"
+                        + "Se han podido limpiar las siguientes habitaciones\n"
+                        + Arrays.toString(habitacionesAspiradas.toArray()));
+                localizacionAspiradora = dependencias[i];
+                break;
+            }
+        }
+        return carga;
+
     }
 
     //Metodo para devolver el robot a su base de carga y cargar la bateria hasta el 100%
@@ -315,9 +346,8 @@ public class Aspiradaw {
                         case 1:
 
                             //Este modo limpia el piso entero en funcion de la bateria
-//                            for (int i = 0; i < dependenciasCasa.length; i++) {
-//
-//                            }
+                            nivelCarga = modoCompleto(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_ASPIRANDO);
+//                            
                             break;
                         case 2:
 
