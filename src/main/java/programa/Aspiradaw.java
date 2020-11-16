@@ -5,6 +5,9 @@
  */
 package programa;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
@@ -23,6 +26,7 @@ public class Aspiradaw {
     static final double PORCENTAJE_PIERDE_ASPIRANDO = -0.15;
     static final double PORCENTAJE_PIERDE_FREGANDO = -0.225;
     static final double MINIMO_BATERIA = 0.3;
+    static double nivelCarga;
 
     //Metodo que solicita un usuario y contraseña hasta que se introduce correctamente
     public static void autentificacion() {
@@ -125,17 +129,54 @@ public class Aspiradaw {
     //Metodo que establece el nivel de carga de la bateria
     public static double estableceCarga() {
 
-        double nivelCarga;
+        double carga;
 
         //Mientras los valores introducidos sean inferiores a 0 o superiores a 100 se vuelve a mostrar el mensaje por ventana
         do {
 
-            nivelCarga = Double.parseDouble(JOptionPane.showInputDialog("Establece el nivel de carga del robot aspiradora\n"
+            carga = Double.parseDouble(JOptionPane.showInputDialog("Establece el nivel de carga del robot aspiradora\n"
                     + "(Valores válidos: 0% - 100%)"));
 
-        } while (nivelCarga < 0 || nivelCarga > 100);
+        } while (carga < 0 || carga > 100);
 
-        return nivelCarga;
+        return carga;
+    }
+
+    //Metodo para devolver el robot a su base de carga y cargar la bateria hasta el 100%
+    public static double baseDeCarga() {
+
+        double carga;
+        JOptionPane.showMessageDialog(null, "Cargando batería...");
+        carga = 100;
+        JOptionPane.showMessageDialog(null, "¡Carga completada! Nivel de carga: "
+                + carga + " %");
+
+        return carga;
+
+    }
+
+    //Metodo que devuelve la fecha actual
+    public static String devuelveFecha() {
+
+        //LocalDate representa una fecha
+        LocalDate fecha = LocalDate.now(); // Para obtener la fecha actual
+        //Para darle formato
+        DateTimeFormatter fechaFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String fechaActual = fecha.format(fechaFormat);
+
+        return fechaActual;
+
+    }
+
+    //Metodo que devuelve la hora actual
+    public static String devuelveHora() {
+
+        //LocalTime representa tiempo
+        LocalTime hora = LocalTime.now();
+        DateTimeFormatter horaFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String horaActual = hora.format(horaFormat);
+
+        return horaActual;
     }
 
     // Metodo que crea un array tipo double vacio de una longitud determinada
@@ -145,7 +186,6 @@ public class Aspiradaw {
 //        array = new double[longitud];
 //        return array;
 //    }
-    //Metodo que cargue la bateria hasta el 100%
     public static void main(String[] args) {
 
         //Autentificacion mediante usuario y contraseña al empezar el programa
@@ -226,47 +266,40 @@ public class Aspiradaw {
                     Double[] metrosCuadDependencias = metrosCuadradosCasa.toArray(new Double[0]);
                     String[] dependenciasCasa = estructuraCasa.toArray(new String[0]);
 
-                    for (int i = 0; i < dependenciasCasa.length; i++) {
-                        System.out.println(dependenciasCasa[i] + " " + metrosCuadDependencias[i]);
-                    }
+//                    for (int i = 0; i < dependenciasCasa.length; i++) {
+//                        System.out.println(dependenciasCasa[i] + " " + metrosCuadDependencias[i]);
+//                    }
+                    break;
 
                 //La opcion 2 establece el nivel de bateria entre 0% y 100%
                 case 2:
-                    double nivelCarga = estableceCarga();
+                    nivelCarga = estableceCarga();
                     JOptionPane.showMessageDialog(null, "Nivel de carga..." + nivelCarga + " %");
+                    break;
 
+                // Aspiracion
                 case 3:
 
                 case 4:
 
+                //Mostrar estado general
                 case 5:
+                    //Mostrar fecha y hora actuales
+                    String fechaAhora = devuelveFecha();
+                    String horaAhora = devuelveHora();
+                    JOptionPane.showMessageDialog(null, "ESTADO GENERAL:\n"
+                            + "Fecha y hora actuales:\n" + fechaAhora + "\n" + horaAhora);
+                    break;
 
                 case 6:
+                    nivelCarga = baseDeCarga();
+                    break;
 
                 case 7:
+                    menuSalir();
+                    break;
 
             }
-
-            // Configuración del sistema
-            //Recorro el array de la estructura de la casa y para cada una de las dependencias pido los metros
-//            for (int i = 0; i < estructuraCasa.length; i++) {
-//
-//                String dependencia = estructuraCasa[i];
-//                metrosCuadradosDependencias[i] = pedirMetrosDependencia(dependencia);
-//
-//            }
-            // + : Configuracion num dependencias 
-//            JOptionPane.showMessageDialog(null, "COCINA");
-//            double metrosCuadradosCocina = pedirMetrosDependencia();
-//            JOptionPane.showMessageDialog(null, "SALÓN");
-//            double metrosCuadradosSalon = pedirMetrosDependencia();
-//            JOptionPane.showMessageDialog(null, "BAÑO");
-//            double metrosCuadradosBano = pedirMetrosDependencia();
-//            JOptionPane.showMessageDialog(null, "DORMITORIO 1");
-//            double metrosCuadradosDorm1 = pedirMetrosDependencia();
-//            JOptionPane.showMessageDialog(null, "DORMITORIO 2");
-//            double metrosCuadradosDorm2 = pedirMetrosDependencia();
-            menuSalir();
 
         } while (repetir);
 
