@@ -26,7 +26,17 @@ public class Aspiradaw {
     static final double PORCENTAJE_PIERDE_ASPIRANDO = -0.15;
     static final double PORCENTAJE_PIERDE_FREGANDO = -0.225;
     static final double MINIMO_BATERIA = 0.3;
+    //En esta variable se va a guardar el nivel de la bateria
     static double nivelCarga;
+    //metrosCuadDependencias va a guardar los valores de los m^2 para cada habitacion
+    //(Cada posicion corresponde con la misma posicion de habitaciones)
+    static Double[] metrosCuadDependencias;
+    //dependenciasCasa va a guardar la lista de dependencias de la casa
+    static String[] dependenciasCasa;
+    //metros cuadrados de la casa en total
+    static double metrosTotalesCasa;
+    //Va a guardar la posicion del robot (Por defecto la vamos a poner en la base de carga)
+    static String localizacionAspiradora = "Base de carga";
 
     //Metodo que solicita un usuario y contraseña hasta que se introduce correctamente
     public static void autentificacion() {
@@ -179,6 +189,18 @@ public class Aspiradaw {
         return horaActual;
     }
 
+    //Metodo que suma los elementos de un array que se pasa como parámetro
+    public static double sumarElementosArray(Double[] array) {
+
+        double suma = 0;
+
+        for (int i = 0; i < array.length; i++) {
+            suma += array[i];
+
+        }
+        return suma;
+    }
+
     // Metodo que crea un array tipo double vacio de una longitud determinada
 //    public static double[] devuelveArray(int longitud) {
 //        
@@ -263,32 +285,64 @@ public class Aspiradaw {
                     //En el argumento del toArray es necesario pasar un array vacio
                     //para forzar a ArrayList a crear un nuevo array y devolverlo
                     //Este array va a ser una copia de los elementos del arraylist
-                    Double[] metrosCuadDependencias = metrosCuadradosCasa.toArray(new Double[0]);
-                    String[] dependenciasCasa = estructuraCasa.toArray(new String[0]);
+                    metrosCuadDependencias = metrosCuadradosCasa.toArray(new Double[0]);
+                    dependenciasCasa = estructuraCasa.toArray(new String[0]);
 
-//                    for (int i = 0; i < dependenciasCasa.length; i++) {
-//                        System.out.println(dependenciasCasa[i] + " " + metrosCuadDependencias[i]);
-//                    }
+                    //Calculo de los m2 totales de la casa:
+                    metrosTotalesCasa = sumarElementosArray(metrosCuadDependencias);
+
                     break;
 
                 //La opcion 2 establece el nivel de bateria entre 0% y 100%
                 case 2:
                     nivelCarga = estableceCarga();
                     JOptionPane.showMessageDialog(null, "Nivel de carga..." + nivelCarga + " %");
+
                     break;
 
                 // Aspiracion
+                //Hay dos modos
                 case 3:
+
+                    int modoAspiracion;
+                    modoAspiracion = Integer.parseInt(JOptionPane.showInputDialog("Selecciona el modo de aspiración:\n"
+                            + "1. - Modo completo\n"
+                            + "2. - Modo dependencias"));
+
+                    //switch para seleccionar entre los dos modos
+                    switch (modoAspiracion) {
+
+                        case 1:
+
+                            //Este modo limpia el piso entero en funcion de la bateria
+//                            for (int i = 0; i < dependenciasCasa.length; i++) {
+//
+//                            }
+                            break;
+                        case 2:
+
+                            break;
+
+                    }
+                    break;
 
                 case 4:
 
                 //Mostrar estado general
                 case 5:
                     //Mostrar fecha y hora actuales
+                    //Nivel de bateria
+                    //Lugar donde esta parado el robot
+                    //Dependencias y m2
+
                     String fechaAhora = devuelveFecha();
                     String horaAhora = devuelveHora();
                     JOptionPane.showMessageDialog(null, "ESTADO GENERAL:\n"
-                            + "Fecha y hora actuales:\n" + fechaAhora + "\n" + horaAhora);
+                            + "Fecha actual: " + fechaAhora + "\nHora actual: " + horaAhora
+                            + "\nNivel de batería: " + nivelCarga + " %"
+                            + "\nEl robot se encuentra en: " + localizacionAspiradora
+                            + "\nDependencias de la casa: " + Arrays.toString(dependenciasCasa)
+                            + "\n Metros cuadrados totales de la casa: " + metrosTotalesCasa + " m2");
                     break;
 
                 case 6:
