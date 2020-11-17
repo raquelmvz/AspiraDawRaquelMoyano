@@ -40,7 +40,7 @@ public class Aspiradaw {
     //Variable donde guardar el gasto de bateria durante la limpieza
     static double bateriaSeGasta;
     //ArrayList donde ir guardando las habitaciones que se van aspirando durante el proceso
-    static ArrayList<String> habitacionesAspiradas = new ArrayList<>();
+    static ArrayList<String> habitacionesAspiradas;
 
     //Metodo que solicita un usuario y contraseña hasta que se introduce correctamente
     public static void autentificacion() {
@@ -162,6 +162,11 @@ public class Aspiradaw {
     //que sirva tanto para aspirado como para fregado
     public static double modoCompleto(double carga, Double[] metrosCuad, String[] dependencias, double porcentaje) {
         //Este modo va a limpiar el piso entero en funcion de la bateria
+
+        /* Se crea habitacionesAspiradas vacio dentro del método para que no de fallos al reutilizar este metodo
+        cuando se realiza varias veces la funcion de modo completo en aspirado y fregado. El resultado de "se han 
+        limpiado x habitaciones" ahora no se mezcla con los resultados anteriores */
+        habitacionesAspiradas = new ArrayList<>();
         for (int i = 0; i < dependencias.length; i++) {
             bateriaSeGasta = metrosCuad[i] * porcentaje;//la bateria baja hasta mas de 3% ARREGLAR
 
@@ -335,6 +340,8 @@ public class Aspiradaw {
                 //Hay dos modos
                 case 3:
 
+                    //En caso de que aun no se haya establecido una distribucion de la casa o un nivel de batería
+                    //saltará un mensaje de advertencia que pida al usuario que introduzca esos datos para poder aspirar
                     if (dependenciasCasa != null && nivelCarga != 0) {
 
                         int modoAspiracion;
@@ -366,7 +373,41 @@ public class Aspiradaw {
 
                     break;
 
+                //Opcion para aspiracion y fregado
                 case 4:
+
+                    //En caso de que aun no se haya establecido una distribucion de la casa o un nivel de batería
+                    //saltará un mensaje de advertencia que pida al usuario que introduzca esos datos para poder aspirar
+                    if (dependenciasCasa != null && nivelCarga != 0) {
+
+                        int modoFregado;
+                        modoFregado = Integer.parseInt(JOptionPane.showInputDialog("Selecciona el modo de aspiración y fregado:\n"
+                                + "1. - Modo completo\n"
+                                + "2. - Modo dependencias"));
+
+                        //switch para seleccionar entre los dos modos
+                        switch (modoFregado) {
+
+                            case 1:
+
+                                //Este modo limpia el piso entero en funcion de la bateria
+                                nivelCarga = modoCompleto(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_FREGANDO);
+
+                                break;
+                            case 2:
+
+                                break;
+
+                        }
+                    } else if (dependenciasCasa == null) {
+                        JOptionPane.showMessageDialog(null, "¡Advertencia! Su domicilio aún no está configurado\n"
+                                + "Por favor, pulse 1 para configurar las dependencias de su domicilio");
+                    } else if (nivelCarga == 0) {
+                        JOptionPane.showMessageDialog(null, "¡Advertencia! El estado de la batería no se ha configurado\n"
+                                + "Por favor, pulse 2 para configurar el nivel de batería");
+                    }
+
+                    break;
 
                 //Mostrar estado general
                 case 5:
