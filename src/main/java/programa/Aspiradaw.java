@@ -164,7 +164,7 @@ public class Aspiradaw {
         //Este modo va a limpiar el piso entero en funcion de la bateria
         for (int i = 0; i < dependencias.length; i++) {
             bateriaSeGasta = metrosCuad[i] * porcentaje;//la bateria baja hasta mas de 3% ARREGLAR
-            
+
             if ((carga - bateriaSeGasta) > MINIMO_BATERIA) {
                 carga = carga - bateriaSeGasta;
                 JOptionPane.showMessageDialog(null, "Limpiando..." + dependencias[i]);
@@ -335,25 +335,35 @@ public class Aspiradaw {
                 //Hay dos modos
                 case 3:
 
-                    int modoAspiracion;
-                    modoAspiracion = Integer.parseInt(JOptionPane.showInputDialog("Selecciona el modo de aspiración:\n"
-                            + "1. - Modo completo\n"
-                            + "2. - Modo dependencias"));
+                    if (dependenciasCasa != null && nivelCarga != 0) {
 
-                    //switch para seleccionar entre los dos modos
-                    switch (modoAspiracion) {
+                        int modoAspiracion;
+                        modoAspiracion = Integer.parseInt(JOptionPane.showInputDialog("Selecciona el modo de aspiración:\n"
+                                + "1. - Modo completo\n"
+                                + "2. - Modo dependencias"));
 
-                        case 1:
+                        //switch para seleccionar entre los dos modos
+                        switch (modoAspiracion) {
 
-                            //Este modo limpia el piso entero en funcion de la bateria
-                            nivelCarga = modoCompleto(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_ASPIRANDO);
+                            case 1:
+
+                                //Este modo limpia el piso entero en funcion de la bateria
+                                nivelCarga = modoCompleto(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_ASPIRANDO);
 //                            
-                            break;
-                        case 2:
+                                break;
+                            case 2:
 
-                            break;
+                                break;
 
+                        }
+                    } else if (dependenciasCasa == null) {
+                        JOptionPane.showMessageDialog(null, "¡Advertencia! Su domicilio aún no está configurado\n"
+                                + "Por favor, pulse 1 para configurar las dependencias de su domicilio");
+                    } else if (nivelCarga == 0) {
+                        JOptionPane.showMessageDialog(null, "¡Advertencia! El estado de la batería no se ha configurado\n"
+                                + "Por favor, pulse 2 para configurar el nivel de batería");
                     }
+
                     break;
 
                 case 4:
@@ -377,6 +387,8 @@ public class Aspiradaw {
 
                 case 6:
                     nivelCarga = baseDeCarga();
+                    //La localizacion del robot sera la de base de carga
+                    localizacionAspiradora = "Base de carga";
                     break;
 
                 case 7:
