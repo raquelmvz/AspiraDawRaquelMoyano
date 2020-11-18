@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,7 +20,6 @@ import javax.swing.JOptionPane;
 public class Aspiradaw {
 
     /* Variables a utilizar por los métodos */
- /* Usuario y contraseña como final */
     static final String USUARIO = "raquel";
     static final String PASSWORD = "aspiradaw";
     /* Para que el programa se repita siempre a no ser que
@@ -210,6 +210,24 @@ public class Aspiradaw {
         /* Devuelve el valor actualizado de la carga después de finalizar de limpiar */
         return carga;
 
+    }
+    
+    /* Metodo que muestra una ventana de seleccion multiple
+    La voy a usar en el modo dependencias */
+    public static void menuSeleccionMultiple(String[] estructuraCasa) {
+        
+        /* JList muestra un cjto de objetos y permite al usuario seleccionar
+        uno o mas */
+        JList<String> jlist = new JList<>(estructuraCasa);
+        JOptionPane.showMessageDialog(null, "A continuación se muestra una lista con las dependencias de la casa\n"
+                + "Elija una o más (CTRL + clic para selección múltiple)");
+        JOptionPane.showMessageDialog(null, jlist, "Elige las dependencias a limpiar...", JOptionPane.PLAIN_MESSAGE); //plain_message no muestra icono
+        /* getSelectedIndices devuelve los indices seleccionados por el usuario y los almacenamos en un array de valores */
+        int[] valores = jlist.getSelectedIndices();
+        for (int i = 0; i < valores.length; i++) {
+            JOptionPane.showMessageDialog(null, estructuraCasa[valores[i]]);
+        }
+        
     }
 
     public static double modoDependencias(double carga, Double[] metrosCuad, String[] dependencias, double porcentaje) {
@@ -448,8 +466,8 @@ public class Aspiradaw {
 
                                 break;
                             case 2:
-                                nivelCarga = modoDependencias(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_ASPIRANDO);
-
+                                //nivelCarga = modoDependencias(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_ASPIRANDO);
+                                menuSeleccionMultiple(dependenciasCasa);
                                 break;
 
                         }
