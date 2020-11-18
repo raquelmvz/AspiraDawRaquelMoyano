@@ -32,7 +32,7 @@ public class Aspiradaw {
 
     /* ArrayList donde guardar las habitaciones que el usuario indica que quiere limpiar
     en el modo dependencias */
-    static ArrayList<String> habitacionesIndicadas;
+    static ArrayList<String> habitacionesIndicadas = new ArrayList<String>();
 
     /* Método que solicita un usuario y contraseña hasta que se introduzcan correctamente */
     public static void autentificacion() {
@@ -44,7 +44,7 @@ public class Aspiradaw {
         /* Si la primera vez que se introducen los datos éstos son erróneos sale una 
         ventana de error diciendo que no son válidos. Se vuelven a solicitar los datos */
         while (!user.equals(USUARIO) || !pass.equals(PASSWORD)) {
-            JOptionPane.showMessageDialog(null, "Usuario o contraseña no válidos");
+            JOptionPane.showMessageDialog(null, "Usuario o contraseña no válidos", "Error", JOptionPane.ERROR_MESSAGE);
             user = JOptionPane.showInputDialog("Introduce tu usuario:");
             pass = JOptionPane.showInputDialog("Introduce tu contraseña:");
         }
@@ -186,7 +186,7 @@ public class Aspiradaw {
                 carga = carga - bateriaSeGastaCompleto;
 
                 /* Van saliendo ventanas informando de la dependencia que se está limpiando en el momento */
-                JOptionPane.showMessageDialog(null, "Limpiando..." + dependencias[i]);
+                JOptionPane.showMessageDialog(null, "Limpiando..." + dependencias[i], "Progreso", JOptionPane.PLAIN_MESSAGE);
 
                 /* Se van añadiendo habitaciones a la lista de las habitaciones aspiradas */
                 habitacionesAspiradas.add(dependencias[i]);
@@ -199,7 +199,7 @@ public class Aspiradaw {
                 /* Si no hay suficiente batería para seguir limpiando */
                 JOptionPane.showMessageDialog(null, "No hay batería suficiente para seguir limpiando\n"
                         + "Se han podido limpiar las siguientes habitaciones\n"
-                        + Arrays.toString(habitacionesAspiradas.toArray()));
+                        + Arrays.toString(habitacionesAspiradas.toArray()), "Mensaje", JOptionPane.PLAIN_MESSAGE);
 
                 /* La aspiradora entra en la habitación que no puede limpiar y se queda ahí parada */
                 localizacionAspiradora = dependencias[i];
@@ -211,11 +211,12 @@ public class Aspiradaw {
         return carga;
 
     }
-    
+
     /* Metodo que muestra una ventana de seleccion multiple
-    La voy a usar en el modo dependencias */
-    public static void menuSeleccionMultiple(String[] estructuraCasa) {
-        
+    La voy a usar en el modo dependencias 
+    Recibe como parametro el array donde se guardan las dependencias de la casa */
+    public static String[] menuSeleccionMultiple(String[] estructuraCasa) {
+
         /* JList muestra un cjto de objetos y permite al usuario seleccionar
         uno o mas */
         JList<String> jlist = new JList<>(estructuraCasa);
@@ -225,21 +226,71 @@ public class Aspiradaw {
         /* getSelectedIndices devuelve los indices seleccionados por el usuario y los almacenamos en un array de valores */
         int[] valores = jlist.getSelectedIndices();
         for (int i = 0; i < valores.length; i++) {
-            JOptionPane.showMessageDialog(null, estructuraCasa[valores[i]]);
+            habitacionesIndicadas.add(estructuraCasa[valores[i]]);
         }
-        
+
+        /* Conversion de la lista en array */
+        String[] habitacIndicadas = habitacionesIndicadas.toArray(new String[0]);
+
+        /* Devuelve un array string con las habitaciones que ha seleccionado el usuario */
+        return habitacIndicadas;
+
     }
 
+    /* Método que realiza el modo dependencias
+    Recibe por parámetros: nivel de carga, array de dependencias,
+    array de m2 y % que pierde la bateria
+    Sirve tanto para ASPIRACION como para FREGADO */
     public static double modoDependencias(double carga, Double[] metrosCuad, String[] dependencias, double porcentaje) {
 
+        /* Lista donde ir guardando las habitaciones que limpia el robot */
         ArrayList<String> habitacionesAspiradas = new ArrayList<>();
 
-        //Switch con una serie de opciones para seleccionar las habitaciones a limpiar
-        int opcionesALimpiar;
+        /* Uso el método menuSeleccionMultiple para seleccionar las habitaciones a limpiar */
+        String[] habitacionesModoDependencias = menuSeleccionMultiple(dependencias);
 
-        JOptionPane.showMessageDialog(null, Arrays.toString(dependencias));
+        /* Variable donde se guarda la bateria que se gasta en este modo */
+        double bateriaSeGastaCompleto;
 
+        /* Se recorre la lista de las dependencias elegidas por el usuario para ir limpiando en orden */
+        for (int i = 0; i < habitacionesModoDependencias.length; i++) {
+
+            /* La bateria que se gasta por habitacion es: los m2 de
+            la habitacion por el porcentaje de gasto */
+            bateriaSeGastaCompleto = metrosCuad[i] * porcentaje;
+
+            /* Antes de empezar a limpiar la habitacion comprobamos que tenemos la 
+            bateria suficiente como para acabar de limpiarla (que sea > 3%) */
+            if ((carga - bateriaSeGastaCompleto) > MINIMO_BATERIA) {
+
+                /* Una vez comprobado lo anterior se actualiza la bateria */
+                carga = carga - bateriaSeGastaCompleto;
+
+                /* Van saliendo ventanas informando de la dependencia que se está limpiando en el momento */
+                JOptionPane.showMessageDialog(null, "Limpiando..." + habitacionesModoDependencias[i], "Progreso", JOptionPane.PLAIN_MESSAGE);
+
+                /* Se van añadiendo habitaciones a la lista de las habitaciones aspiradas */
+                habitacionesAspiradas.add(habitacionesModoDependencias[i]);
+
+                /* La localización de la batería va cambiando según la habitación en la que esté */
+                localizacionAspiradora = habitacionesModoDependencias[i];
+
+            } else {
+
+                /* Si no hay suficiente batería para seguir limpiando */
+                JOptionPane.showMessageDialog(null, "No hay batería suficiente para seguir limpiando\n"
+                        + "Se han podido limpiar las siguientes habitaciones\n"
+                        + Arrays.toString(habitacionesAspiradas.toArray()), "Mensaje", JOptionPane.PLAIN_MESSAGE);
+
+                /* La aspiradora entra en la habitación que no puede limpiar y se queda ahí parada */
+                localizacionAspiradora = dependencias[i];
+                break;
+            }
+        }
+
+        /* Devuelve el valor actualizado de la carga después de finalizar de limpiar */
         return carga;
+
     }
 
     /* Método que devuelve el robot a su base de carga y carga su bateria hasta el 100% */
@@ -249,14 +300,14 @@ public class Aspiradaw {
         double carga;
 
         /* Sale una ventana que indica que se está cargando la batería */
-        JOptionPane.showMessageDialog(null, "Cargando batería...");
+        JOptionPane.showMessageDialog(null, "Cargando batería...", "Carga", JOptionPane.PLAIN_MESSAGE);
 
         /* Se asigna el valor 100 a la carga para cargar la bateria al completo */
         carga = 100;
 
         /* Ventana que informa de que la batería se ha cargado por completo */
         JOptionPane.showMessageDialog(null, "¡Carga completada! Nivel de carga: "
-                + carga + " %");
+                + carga + " %", "Carga", JOptionPane.PLAIN_MESSAGE);
 
         /* Se devuelve el valor actualizado de la carga */
         return carga;
@@ -434,7 +485,7 @@ public class Aspiradaw {
                     /* El metodo estableceCarga se usa para actualizar el valor del nivel de la
                     bateria al que indique el usuario */
                     nivelCarga = estableceCarga();
-                    JOptionPane.showMessageDialog(null, "Nivel de carga..." + nivelCarga + " %");
+                    JOptionPane.showMessageDialog(null, "Nivel de carga..." + nivelCarga + " %", "Nivel de carga", JOptionPane.PLAIN_MESSAGE);
 
                     break;
 
@@ -466,18 +517,19 @@ public class Aspiradaw {
 
                                 break;
                             case 2:
-                                //nivelCarga = modoDependencias(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_ASPIRANDO);
-                                menuSeleccionMultiple(dependenciasCasa);
+                                
+                                /* Este modo limpia solo las habitaciones que elija el usuario */
+                                nivelCarga = modoDependencias(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_ASPIRANDO);
                                 break;
 
                         }
                         /* Advertencias por si el usuario aun no ha pulsado las opciones 1 y 2 */
                     } else if (dependenciasCasa.length == 0) {
                         JOptionPane.showMessageDialog(null, "¡Advertencia! Su domicilio aún no está configurado\n"
-                                + "Por favor, pulse 1 para configurar las dependencias de su domicilio");
+                                + "Por favor, pulse 1 para configurar las dependencias de su domicilio", "Mensaje", JOptionPane.WARNING_MESSAGE);
                     } else if (nivelCarga == 0) {
                         JOptionPane.showMessageDialog(null, "¡Advertencia! El estado de la batería no se ha configurado\n"
-                                + "Por favor, pulse 2 para configurar el nivel de batería");
+                                + "Por favor, pulse 2 para configurar el nivel de batería", "Mensaje", JOptionPane.WARNING_MESSAGE);
                     }
 
                     break;
@@ -509,16 +561,19 @@ public class Aspiradaw {
 
                                 break;
                             case 2:
+                                
+                                /* Solo las habitaciones que indica el usuario */
+                                nivelCarga = modoDependencias(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_FREGANDO);
 
                                 break;
 
                         }
                     } else if (dependenciasCasa.length == 0) {
                         JOptionPane.showMessageDialog(null, "¡Advertencia! Su domicilio aún no está configurado\n"
-                                + "Por favor, pulse 1 para configurar las dependencias de su domicilio");
+                                + "Por favor, pulse 1 para configurar las dependencias de su domicilio", "Mensaje", JOptionPane.WARNING_MESSAGE);
                     } else if (nivelCarga == 0) {
                         JOptionPane.showMessageDialog(null, "¡Advertencia! El estado de la batería no se ha configurado\n"
-                                + "Por favor, pulse 2 para configurar el nivel de batería");
+                                + "Por favor, pulse 2 para configurar el nivel de batería", "Mensaje", JOptionPane.WARNING_MESSAGE);
                     }
 
                     break;
@@ -533,12 +588,12 @@ public class Aspiradaw {
 
                     String fechaAhora = devuelveFecha();
                     String horaAhora = devuelveHora();
-                    JOptionPane.showMessageDialog(null, "ESTADO GENERAL:\n"
-                            + "Fecha actual: " + fechaAhora + "\nHora actual: " + horaAhora
+                    JOptionPane.showMessageDialog(null, "Fecha actual: " + fechaAhora
+                            + "\nHora actual: " + horaAhora
                             + "\nNivel de batería: " + nivelCarga + " %"
                             + "\nEl robot se encuentra en: " + localizacionAspiradora
                             + "\nDependencias de la casa: " + Arrays.toString(dependenciasCasa)
-                            + "\n Metros cuadrados totales de la casa: " + metrosTotalesCasa + " m2");
+                            + "\n Metros cuadrados totales de la casa: " + metrosTotalesCasa + " m2", "Estado general", JOptionPane.PLAIN_MESSAGE);
                     break;
 
                 /* Para que el robot vuelva a la base de carga */
