@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author raquel
+ * @author Raquel Moyano Vázquez
  */
 public class Aspiradaw {
 
@@ -29,10 +29,8 @@ public class Aspiradaw {
     /* Para guardar la posición del robot
     Por defecto va a estar en la base de carga */
     static String localizacionAspiradora = "Base de carga";
+    static double nivelCarga = 0; // Nivel de la bateria
 
-    /* ArrayList donde guardar las habitaciones que el usuario indica que quiere limpiar
-    en el modo dependencias */
-    static ArrayList<String> habitacionesIndicadas = new ArrayList<String>();
 
     /* Método que solicita un usuario y contraseña hasta que se introduzcan correctamente */
     public static void autentificacion() {
@@ -62,7 +60,6 @@ public class Aspiradaw {
         if (opcion == JOptionPane.YES_OPTION) {
             /* repetir es false --> se para la ejecución del programa */
             repetir = false;
-
         }
 
         return repetir;
@@ -216,16 +213,24 @@ public class Aspiradaw {
     La voy a usar en el modo dependencias 
     Recibe como parametro el array donde se guardan las dependencias de la casa */
     public static String[] menuSeleccionMultiple(String[] estructuraCasa) {
+        /* ArrayList donde guardar las habitaciones que el usuario indica que quiere limpiar
+    en el modo dependencias */
+        ArrayList<String> habitacionesIndicadas = new ArrayList<>();
 
         /* JList muestra un cjto de objetos y permite al usuario seleccionar
         uno o mas */
         JList<String> jlist = new JList<>(estructuraCasa);
-        JOptionPane.showMessageDialog(null, "A continuación se muestra una lista con las dependencias de la casa\n"
+
+        JOptionPane.showMessageDialog(
+                null, "A continuación se muestra una lista con las dependencias de la casa\n"
                 + "Elija una o más (CTRL + clic para selección múltiple)");
-        JOptionPane.showMessageDialog(null, jlist, "Elige las dependencias a limpiar...", JOptionPane.PLAIN_MESSAGE); //plain_message no muestra icono
+        JOptionPane.showMessageDialog(
+                null, jlist, "Elige las dependencias a limpiar...", JOptionPane.PLAIN_MESSAGE); //plain_message no muestra icono
         /* getSelectedIndices devuelve los indices seleccionados por el usuario y los almacenamos en un array de valores */
         int[] valores = jlist.getSelectedIndices();
-        for (int i = 0; i < valores.length; i++) {
+        for (int i = 0;
+                i < valores.length;
+                i++) {
             habitacionesIndicadas.add(estructuraCasa[valores[i]]);
         }
 
@@ -359,7 +364,7 @@ public class Aspiradaw {
         /* Declaracion de variables a usar en main */
         final double PORCENTAJE_PIERDE_ASPIRANDO = 0.15;
         final double PORCENTAJE_PIERDE_FREGANDO = 0.225;
-        double nivelCarga = 0; // Nivel de la bateria
+
         Double[] metrosCuadDependencias = new Double[0]; // Valores de m2 de cada habitacion (mismas posiciones que la lista de dependencias)
         String[] dependenciasCasa = new String[0]; // Dependencias de la casa
         double metrosTotalesCasa = 0; // m2 cuadrados totales de la casa
@@ -517,7 +522,7 @@ public class Aspiradaw {
 
                                 break;
                             case 2:
-                                
+
                                 /* Este modo limpia solo las habitaciones que elija el usuario */
                                 nivelCarga = modoDependencias(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_ASPIRANDO);
                                 break;
@@ -561,7 +566,7 @@ public class Aspiradaw {
 
                                 break;
                             case 2:
-                                
+
                                 /* Solo las habitaciones que indica el usuario */
                                 nivelCarga = modoDependencias(nivelCarga, metrosCuadDependencias, dependenciasCasa, PORCENTAJE_PIERDE_FREGANDO);
 
