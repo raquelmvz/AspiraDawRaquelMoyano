@@ -31,6 +31,11 @@ public class Aspiradaw {
     static String localizacionAspiradora = "Base de carga";
     static double nivelCarga = 0; // Nivel de la bateria
 
+    /* ArrayList donde guardar las habitaciones que el usuario indica que quiere limpiar
+    en el modo dependencias */
+    static ArrayList<String> habitacionesIndicadas;
+    static ArrayList<Double> metrosHabitacionesIndicadas;
+
 
     /* Método que solicita un usuario y contraseña hasta que se introduzcan correctamente */
     public static void autentificacion() {
@@ -77,7 +82,7 @@ public class Aspiradaw {
         casaPredeterminada.add("Dormitorio 1");
         casaPredeterminada.add("Dormitorio 2");
 
-        /* Devuelve un ArrayList con los nombres de las dependencias de la casa */
+        /* Devuelve un array con los nombres de las dependencias de la casa */
         return casaPredeterminada;
     }
 
@@ -211,11 +216,12 @@ public class Aspiradaw {
 
     /* Metodo que muestra una ventana de seleccion multiple
     La voy a usar en el modo dependencias 
-    Recibe como parametro el array donde se guardan las dependencias de la casa */
-    public static String[] menuSeleccionMultiple(String[] estructuraCasa) {
+    Recibe como parametro el array donde se guardan las dependencias de la casa y el de los metros*/
+    public static String[] menuSeleccionMultiple(String[] estructuraCasa, Double[] metros) {
         /* ArrayList donde guardar las habitaciones que el usuario indica que quiere limpiar
     en el modo dependencias */
-        ArrayList<String> habitacionesIndicadas = new ArrayList<>();
+        habitacionesIndicadas = new ArrayList<>();
+        metrosHabitacionesIndicadas = new ArrayList<>();
 
         /* JList muestra un cjto de objetos y permite al usuario seleccionar
         uno o mas */
@@ -228,14 +234,14 @@ public class Aspiradaw {
                 null, jlist, "Elige las dependencias a limpiar...", JOptionPane.PLAIN_MESSAGE); //plain_message no muestra icono
         /* getSelectedIndices devuelve los indices seleccionados por el usuario y los almacenamos en un array de valores */
         int[] valores = jlist.getSelectedIndices();
-        for (int i = 0;
-                i < valores.length;
-                i++) {
+        for (int i = 0; i < valores.length; i++) {
             habitacionesIndicadas.add(estructuraCasa[valores[i]]);
+            metrosHabitacionesIndicadas.add(metros[valores[i]]);
         }
 
         /* Conversion de la lista en array */
         String[] habitacIndicadas = habitacionesIndicadas.toArray(new String[0]);
+
 
         /* Devuelve un array string con las habitaciones que ha seleccionado el usuario */
         return habitacIndicadas;
@@ -252,7 +258,10 @@ public class Aspiradaw {
         ArrayList<String> habitacionesAspiradas = new ArrayList<>();
 
         /* Uso el método menuSeleccionMultiple para seleccionar las habitaciones a limpiar */
-        String[] habitacionesModoDependencias = menuSeleccionMultiple(dependencias);
+        String[] habitacionesModoDependencias = menuSeleccionMultiple(dependencias, metrosCuad);
+
+        /* Conversion de la lista de los metros a array */
+        Double[] metrosModoDependencias = metrosHabitacionesIndicadas.toArray(new Double[0]);
 
         /* Variable donde se guarda la bateria que se gasta en este modo */
         double bateriaSeGastaCompleto;
@@ -262,7 +271,7 @@ public class Aspiradaw {
 
             /* La bateria que se gasta por habitacion es: los m2 de
             la habitacion por el porcentaje de gasto */
-            bateriaSeGastaCompleto = metrosCuad[i] * porcentaje;
+            bateriaSeGastaCompleto = metrosModoDependencias[i] * porcentaje;
 
             /* Antes de empezar a limpiar la habitacion comprobamos que tenemos la 
             bateria suficiente como para acabar de limpiarla (que sea > 3%) */
