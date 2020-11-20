@@ -33,6 +33,7 @@ public class Aspiradaw {
     en el modo dependencias */
     static ArrayList<String> habitacionesIndicadas;
     static ArrayList<Double> metrosHabitacionesIndicadas;
+    static double nivelCarga = 0; // Nivel de la bateria
 
 
     /* Método que solicita un usuario y contraseña hasta que se introduzcan correctamente */
@@ -390,7 +391,6 @@ public class Aspiradaw {
         /* Declaracion de variables a usar en main */
         final double PORCENTAJE_PIERDE_ASPIRANDO = 0.15;
         final double PORCENTAJE_PIERDE_FREGANDO = 0.225;
-        double nivelCarga = 0; // Nivel de la bateria
         Double[] metrosCuadDependencias = new Double[0]; // Valores de m2 de cada habitacion (mismas posiciones que la lista de dependencias)
         String[] dependenciasCasa = new String[0]; // Dependencias de la casa
         double metrosTotalesCasa = 0; // m2 cuadrados totales de la casa
