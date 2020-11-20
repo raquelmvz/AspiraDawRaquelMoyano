@@ -29,7 +29,6 @@ public class Aspiradaw {
     /* Para guardar la posición del robot
     Por defecto va a estar en la base de carga */
     static String localizacionAspiradora = "Base de carga";
-    static double nivelCarga = 0; // Nivel de la bateria
     /* ArrayList donde guardar las habitaciones que el usuario indica que quiere limpiar
     en el modo dependencias */
     static ArrayList<String> habitacionesIndicadas;
@@ -391,7 +390,7 @@ public class Aspiradaw {
         /* Declaracion de variables a usar en main */
         final double PORCENTAJE_PIERDE_ASPIRANDO = 0.15;
         final double PORCENTAJE_PIERDE_FREGANDO = 0.225;
-
+        double nivelCarga = 0; // Nivel de la bateria
         Double[] metrosCuadDependencias = new Double[0]; // Valores de m2 de cada habitacion (mismas posiciones que la lista de dependencias)
         String[] dependenciasCasa = new String[0]; // Dependencias de la casa
         double metrosTotalesCasa = 0; // m2 cuadrados totales de la casa
