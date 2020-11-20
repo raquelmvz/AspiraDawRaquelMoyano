@@ -30,7 +30,6 @@ public class Aspiradaw {
     Por defecto va a estar en la base de carga */
     static String localizacionAspiradora = "Base de carga";
     static double nivelCarga = 0; // Nivel de la bateria
-
     /* ArrayList donde guardar las habitaciones que el usuario indica que quiere limpiar
     en el modo dependencias */
     static ArrayList<String> habitacionesIndicadas;
@@ -173,6 +172,9 @@ public class Aspiradaw {
         /* Variable donde se guarda la bateria que se gasta en este modo */
         double bateriaSeGastaCompleto;
 
+        /* Se usa para lanzar un mensaje cuando se complete la limpieza */
+        boolean completado = true;
+
         /* Se recorre la lista de las dependencias de la casa para ir limpiando en orden */
         for (int i = 0; i < dependencias.length; i++) {
 
@@ -205,9 +207,17 @@ public class Aspiradaw {
 
                 /* La aspiradora entra en la habitación que no puede limpiar y se queda ahí parada */
                 localizacionAspiradora = dependencias[i];
+                completado = false;
+
                 break;
             }
         }
+
+        /* Mensaje de fin de proceso */
+        if (completado) {
+            JOptionPane.showMessageDialog(null, "¡Se ha completado la limpieza correctamente!", "Limpieza completa", JOptionPane.PLAIN_MESSAGE);
+        }
+
 
         /* Devuelve el valor actualizado de la carga después de finalizar de limpiar */
         return carga;
@@ -266,6 +276,9 @@ public class Aspiradaw {
         /* Variable donde se guarda la bateria que se gasta en este modo */
         double bateriaSeGastaCompleto;
 
+        /* Se usa para lanzar un mensaje cuando se complete la limpieza */
+        boolean completado = true;
+
         /* Se recorre la lista de las dependencias elegidas por el usuario para ir limpiando en orden */
         for (int i = 0; i < habitacionesModoDependencias.length; i++) {
 
@@ -298,8 +311,15 @@ public class Aspiradaw {
 
                 /* La aspiradora entra en la habitación que no puede limpiar y se queda ahí parada */
                 localizacionAspiradora = dependencias[i];
+                completado = false;
+                
                 break;
             }
+        }
+
+        /* Mensaje de fin de proceso */
+        if (completado) {
+            JOptionPane.showMessageDialog(null, "¡Se ha completado la limpieza correctamente!", "Limpieza completa", JOptionPane.PLAIN_MESSAGE);
         }
 
         /* Devuelve el valor actualizado de la carga después de finalizar de limpiar */
