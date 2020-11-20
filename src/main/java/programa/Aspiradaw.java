@@ -81,7 +81,7 @@ public class Aspiradaw {
         casaPredeterminada.add("Dormitorio 1");
         casaPredeterminada.add("Dormitorio 2");
 
-        /* Devuelve un array con los nombres de las dependencias de la casa */
+        /* Devuelve un ArrayList con los nombres de las dependencias de la casa */
         return casaPredeterminada;
     }
 
@@ -229,7 +229,7 @@ public class Aspiradaw {
     Recibe como parametro el array donde se guardan las dependencias de la casa y el de los metros*/
     public static String[] menuSeleccionMultiple(String[] estructuraCasa, Double[] metros) {
         /* ArrayList donde guardar las habitaciones que el usuario indica que quiere limpiar
-    en el modo dependencias */
+        en el modo dependencias */
         habitacionesIndicadas = new ArrayList<>();
         metrosHabitacionesIndicadas = new ArrayList<>();
 
@@ -237,11 +237,9 @@ public class Aspiradaw {
         uno o mas */
         JList<String> jlist = new JList<>(estructuraCasa);
 
-        JOptionPane.showMessageDialog(
-                null, "A continuación se muestra una lista con las dependencias de la casa\n"
+        JOptionPane.showMessageDialog(null, "A continuación se muestra una lista con las dependencias de la casa\n"
                 + "Elija una o más (CTRL + clic para selección múltiple)");
-        JOptionPane.showMessageDialog(
-                null, jlist, "Elige las dependencias a limpiar...", JOptionPane.PLAIN_MESSAGE); //plain_message no muestra icono
+        JOptionPane.showMessageDialog(null, jlist, "Elige las dependencias a limpiar...", JOptionPane.PLAIN_MESSAGE); //plain_message no muestra icono
         /* getSelectedIndices devuelve los indices seleccionados por el usuario y los almacenamos en un array de valores */
         int[] valores = jlist.getSelectedIndices();
         for (int i = 0; i < valores.length; i++) {
@@ -312,7 +310,7 @@ public class Aspiradaw {
                 /* La aspiradora entra en la habitación que no puede limpiar y se queda ahí parada */
                 localizacionAspiradora = dependencias[i];
                 completado = false;
-                
+
                 break;
             }
         }
